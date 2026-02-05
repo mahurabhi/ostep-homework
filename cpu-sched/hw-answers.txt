@@ -1,0 +1,42 @@
+Q4) For what types of workloads does SJF deliver the same turnaround
+times as FIFO?
+
+    For any workload where the FIFO service order is already the same as the SJF order, turnaround times are identical. Common cases:
+
+    - All jobs have equal length (every order is equivalent).  
+    - The arrival sequence is nondecreasing by job length (FIFO already schedules shortest-first).  
+    - Trivial cases (one job, or zero jobs).  
+    - When arrival times prevent reordering so SJF cannot move a later short job ahead of an earlier long job (e.g., non‑preemptive SJF with arrivals such that FIFO = SJF).
+
+In short: whenever the FIFO ordering coincides with the shortest‑job‑first ordering, the turnaround times match.
+
+Q5) For what types of workloads and quantum lengths does SJF deliver
+the same response times as RR?
+
+    When jobs are of equal lengths and the quantum is equal to the job length. 
+
+    When all jobs have identical service times and the RR quantum is at least as large as that job length (q >= job length, typically q = job length). 
+    In that case RR hands each job its entire CPU in its first slice (no preemption), 
+    SJF has no shorter jobs to reorder, and the time to first run (response time) is the same for both.
+
+Q6) What happens to response time with SJF as job lengths increase?
+Can you use the simulator to demonstrate the trend?
+
+    Under SJF (non‑preemptive) the absolute response times increase as job service times increase; 
+    if you scale all job lengths by a factor k, response times scale roughly by k.
+    
+    SJF still favors short jobs (they get very low response times); long jobs see larger increases as lengths grow.
+    
+    With staggered arrivals the shape can change (waiting for short arrivals can delay long jobs more), 
+    but average/median response times still increase with longer service times.
+
+Q7) What happens to response time with RR as quantum lengths in-
+crease? Can you write an equation that gives the worst-case re-
+sponse time, given N jobs?
+
+    Response time increases along with the increase in time quantum. 
+
+    As the RR quantum q increases, response time grows roughly linearly with q. Large q makes RR behave like FIFO (less preemption), so waiting times increase toward the sum of other jobs' service times.
+
+    Worst‑case time to receive the first CPU slice (response time) when there are N jobs ready:
+    R_max = (N − 1) * q
