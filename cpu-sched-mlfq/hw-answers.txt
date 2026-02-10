@@ -1,0 +1,43 @@
+3. How would you configure the scheduler parameters to behave just
+like a round-robin scheduler?
+
+Short answer: run MLFQ with a single queue (or make every queue identical and disable demotion/boosting). That produces pure round‑robin scheduling.
+
+Examples for this simulator:
+
+Simplest (single queue RR with quantum q=10):
+
+```sh./mlfq.py -n 1 -q 10 -j 5```
+If you must keep multiple queues, make them all identical and prevent demotions/boosts (large allotments, equal quantums, no boosts, keep-on-I/O):
+
+```sh./mlfq.py -Q 10,10,10 -A 999999,999999,999999 -B 0 -S```
+Notes:
+
+-n 1 (one queue) is the cleanest mapping to RR.
+-q or -Q sets the RR time slice.
+-B 0 disables periodic priority boosting (avoid changing order).
+-A large and equal prevents moving jobs between queues.
+-S makes jobs that block for I/O return to the same priority (closer to RR semantics).
+Avoid -I (iobump), which moves I/O completers to the front and would break RR ordering.
+
+q4. Craft a workload with two jobs and scheduler parameters so that
+one job takes advantage of the older Rules 4a and 4b (turned on
+with the -Sflag) to game the scheduler and obtain 99% of the CPU
+over a particular time interval.
+
+    `./mlfq.py -l 0,297,99:0,300,0 -q 100 -S -i 1 -I -c`
+
+    Notes:  1. `-I` is important because we need to job that has just completed IO 
+                to be moved to the front of the queue. 
+            2. `-i 1` is important because we need to set a io time of 1 and 
+                quantum of 100 so that 1% of the jobs time is spent in io and 99% in CPU.
+
+Q5. Given a system with a quantum length of 10 ms in its highest queue,
+how often would you have to boost jobs back to the highest priority
+level (with the -B flag) in order to guarantee that a single long-
+running (and potentially-starving) job gets at least 5% of the CPU?
+
+    - 200ms. 
+    - boosting every 200ms will ensure that a job gets 10ms of execution time on the CPU, 
+    - ensuring atleast 5% of CPU time
+      
