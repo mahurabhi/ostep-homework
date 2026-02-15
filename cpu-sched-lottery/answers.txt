@@ -1,0 +1,15 @@
+3. When running with two jobs of length 100 and equal ticket alloca-
+tions of 100 (-l 100:100,100:100), how unfair is the scheduler?
+Run with some different random seeds to determine the (probabilis-
+tic) answer; let unfairness be determined by how much earlier one
+job finishes than the other.
+
+    - Unfairness was about 5-6 cycles. 
+4. How does your answer to the previous question change as the quan-
+tum size (-q) gets larger?
+
+    - As the time quantum increases, observed unfairness also increases. With a larger
+      quantum, a job that wins the lottery runs for a longer contiguous period and can
+      finish sooner, widening the gap between completion times. To improve fairness,
+      choose the quantum relative to typical job lengths (e.g., smaller quanta for
+      short jobs or tuned to the workload) so single wins don't let one job dominate.
