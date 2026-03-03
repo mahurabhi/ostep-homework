@@ -1,0 +1,29 @@
+Q3) Let’s say we have a tiny 16-byte address space in a 128-byte physical
+memory. What base and bounds would you set up so as to get
+the simulator to generate the following translation results for the
+specified address stream: valid, valid, violation, ..., violation, valid,
+valid? Assume the following parameters:
+segmentation.py -a 16 -p 128
+-A 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+--b0 ? --l0 ? --b1 ? --l1 ?
+
+Ans: Base register can be anything but the limit register needs to be 2 to generate the required pattern. 
+
+4. Assume we want to generate a problem where roughly 90% of the
+randomly-generated virtual addresses are valid (not segmentation
+violations). How should you configure the simulator to do so?
+Which parameters are important to getting this outcome?
+
+Ans: Crux: Choose valid segment addresses that are 90% of the valid address space. 
+So if address space is 100, 90 should be the valid segment size. this can be 45 for each segment. 
+
+len0 and len1 (segment limits): choose so (len0+len1)/asize ≈ 0.90.
+pick asize = 100, len0 = 45, len1 = 45 → (45+45)/100 = 0.90
+ensure psize large enough for random base placement (psize > 200); use 4096 here
+
+python segmentation.py -a 100 -p 4096 -n 5000 --l0 45 --l1 45 -s 42 -c
+
+5. Can you run the simulator such that no virtual addresses are valid?
+How?
+
+Ans: Set both limit registers to 0. No VA will be valid since the valid segment size is set to 0. 
